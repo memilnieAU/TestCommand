@@ -5,13 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFandCommand"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" >
+
+
     <Grid x:Name="grid">
         <Button x:Name="But_Master" Content="Button" HorizontalAlignment="Left" Margin="261,163,0,0" VerticalAlignment="Top" Width="75" Command="{Binding GoTenLeftCommand}"  />
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="93,342,0,0" TextWrapping="Wrap" Text="{Binding Path=CommandRowCount, Mode=TwoWay}" VerticalAlignment="Top" Width="120" />
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="93,342,0,0" TextWrapping="Wrap" Text="{Binding Path=CommandRowCount, Mode=TwoWay}" VerticalAlignment="Top" Width="120" >
+            
+        </TextBox>
+        
         <Button x:Name="But_Undo" Content="Undo" HorizontalAlignment="Left" Margin="93,64,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="But_Redo" Content="Redo" HorizontalAlignment="Left" Margin="261,78,0,0" VerticalAlignment="Top" Width="75"/>
-        <Image HorizontalAlignment="Left" Height="40" Margin="0,0,0,1" VerticalAlignment="Top" Width="40" Source="C:\Users\memil\source\repos\TestCommand\WPFandCommand\bin\Debug\SpaceGhost.png" RenderTransformOrigin="0.5,0.5" Stretch="UniformToFill" StretchDirection="DownOnly" Cursor="None"/>
 
     </Grid>
 </Window>

@@ -19,7 +19,7 @@ namespace WPFandCommand
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
-        public Button button;
+       
         public Image spaceGhostPic;
         public static int TotalAmount { get; set; }
         public int Id { get; set; }
@@ -28,8 +28,18 @@ namespace WPFandCommand
         public int Pos_x
         {
             get { return pos_x; }
-            set { pos_x = value-100; Notify(); }
+            set { pos_x = value; Notify(); update(spaceGhostPic); }
         }
+
+        void update(Image image)
+        {
+            if (image != null)
+            {
+            image.Margin = new Thickness(Pos_x, Pos_y, 0, 0);
+
+            }
+        }
+
 
         private int pos_y;
 
@@ -37,13 +47,13 @@ namespace WPFandCommand
         public int Pos_y
         {
             get { return pos_y; }
-            set { pos_y = value-100; Notify(); }
+            set { pos_y = value; Notify(); update(spaceGhostPic); }
         }
 
         public Ghost()
         {
             Id = TotalAmount;
-            Pos_x = 0;
+            Pos_x = Id*10;
             Pos_y = 0;
             TotalAmount++;
            
@@ -68,37 +78,41 @@ namespace WPFandCommand
         }
         public void Left1()
         {
-            pos_x--;
+            Pos_x--;
         }
         public void Right1()
         {
-            pos_x++;
+            Pos_x++;
         }
         public void Up1()
         {
-            pos_y--;
+            Pos_y++;
         }
         public void Down1()
         {
-            pos_y++;
+            Pos_y--;
         }
 
     }
 
     public class GoOneLeftCommand : ICommand
     {
+        List<ICommand> CommandRowIsDone { get; set; }
+        
         Ghost ghost;
-        public GoOneLeftCommand(Ghost ghost)
+        public GoOneLeftCommand(Ghost ghost, List<ICommand> CommandRowIsDone)
         {
             this.ghost = ghost;
+        this.CommandRowIsDone = CommandRowIsDone;
         }
-
-
+            
         public void Execute()
         {
+            CommandRowIsDone.Add(this);
             System.Diagnostics.Debug.WriteLine($"{ghost.Id} posX Før:{ghost.Pos_x} ");
             ghost.Left1();
             System.Diagnostics.Debug.WriteLine($"{ghost.Id} posX Efter:{ghost.Pos_x} ");
+          
         }
 
 
@@ -122,17 +136,23 @@ namespace WPFandCommand
     }
     public class GoOneRightCommand : ICommand
     {
+        List<ICommand> CommandRowIsDone { get; set; }
+
         Ghost ghost;
-        public GoOneRightCommand(Ghost ghost)
+        public GoOneRightCommand(Ghost ghost, List<ICommand> CommandRowIsDone)
         {
             this.ghost = ghost;
+            this.CommandRowIsDone = CommandRowIsDone;
         }
 
         public void Execute()
         {
+            CommandRowIsDone.Add(this);
             System.Diagnostics.Debug.WriteLine($"{ghost.Id} posX Før:{ghost.Pos_x} ");
             ghost.Right1();
             System.Diagnostics.Debug.WriteLine($"{ghost.Id} posX Efter:{ghost.Pos_x} ");
+          
+
         }
         public void Unexecute()
         {
@@ -156,16 +176,20 @@ namespace WPFandCommand
     }
     public class GoOneUpCommand : ICommand
     {
+        List<ICommand> CommandRowIsDone { get; set; }
+
         Ghost ghost;
-        public GoOneUpCommand(Ghost ghost)
+        public GoOneUpCommand(Ghost ghost, List<ICommand> CommandRowIsDone)
         {
             this.ghost = ghost;
+            this.CommandRowIsDone = CommandRowIsDone;
         }
 
 
 
         public void Execute()
         {
+            CommandRowIsDone.Add(this);
             System.Diagnostics.Debug.WriteLine($"{ghost.Id} posY Før:{ghost.Pos_y} ");
             ghost.Up1();
             System.Diagnostics.Debug.WriteLine($"{ghost.Id} posY Efter:{ghost.Pos_y} ");
@@ -192,15 +216,20 @@ namespace WPFandCommand
     }
     public class GoOneDownCommand : ICommand
     {
+        List<ICommand> CommandRowIsDone { get; set; }
+
         Ghost ghost;
-        public GoOneDownCommand(Ghost ghost)
+        public GoOneDownCommand(Ghost ghost, List<ICommand> CommandRowIsDone)
         {
             this.ghost = ghost;
+            this.CommandRowIsDone = CommandRowIsDone;
+
         }
 
 
         public void Execute()
         {
+            CommandRowIsDone.Add(this);
             System.Diagnostics.Debug.WriteLine($"{ghost.Id} posY Før:{ghost.Pos_y} ");
             ghost.Down1();
             System.Diagnostics.Debug.WriteLine($"{ghost.Id} posY Efter:{ghost.Pos_y} ");
@@ -227,63 +256,56 @@ namespace WPFandCommand
     }
     public class GoTenLeftCommand : ICommand
     {
+        List<ICommand> CommandRowIsDone { get; set; }
+
         List<GhostInvoker> ghostInvoker;
         List<Ghost> ghost;
-        List<ICommand> CommandRow;
+        
 
 
-        public GoTenLeftCommand(List<GhostInvoker> ghostInvoker, List<Ghost> ghost, List<ICommand> list)
+        public GoTenLeftCommand(List<GhostInvoker> ghostInvoker, List<Ghost> ghost, List<ICommand> CommandRowIsDone)
         {
             this.ghostInvoker = ghostInvoker;
             this.ghost = ghost;
-            CommandRow = list;
+            this.CommandRowIsDone = CommandRowIsDone;
 
         }
 
 
         public void Execute()
         {
-            CommandRow.Add(this);
-            for (int i = 0; i < ghostInvoker.Count; i++)
+        
+            for (int i = 0; i < 50; i++)
             {
-                System.Diagnostics.Debug.WriteLine($"{ghost[i].Id} posX Før:{ghost[i].Pos_x} ");
-                for (int x = 0; x < 50; x++)
+                
+                for (int x = 0; x < ghostInvoker.Count; x++)
                 {
-                    ghostInvoker[i].GoLeft();
+                    ghostInvoker[x].GoLeft();
 
                 }
 
-                System.Diagnostics.Debug.WriteLine($"{ghost[i].Id} posX Efter:{ghost[i].Pos_x} ");
-
+                
             }
 
-            foreach (Ghost ghost in ghost)
-            {
-                ghost.spaceGhostPic.Margin = new Thickness(ghost.Pos_x, ghost.Pos_y, 0, 0);
-            }
+
         }
 
 
         public void Unexecute()
         {
-            for (int i = 0; i < ghostInvoker.Count; i++)
+            for (int i = 0; i < 50; i++)
             {
-                System.Diagnostics.Debug.WriteLine($"{ghost[i].Id} posX Før:{ghost[i].Pos_x} ");
-                for (int x = 0; x < 50; x++)
+                for (int x = 0; x < ghostInvoker.Count; x++)
                 {
-                    ghostInvoker[i].GoRight();
+                    ghostInvoker[x].GoRight();
 
                 }
-                System.Diagnostics.Debug.WriteLine($"{ghost[i].Id} posX Efter:{ghost[i].Pos_x} ");
 
+           
             }
-            foreach (GhostInvoker ghostInvoke in ghostInvoker)
-            {
-            }
-            foreach (Ghost ghost in ghost)
-            {
-                ghost.spaceGhostPic.Margin = new Thickness(ghost.Pos_x, ghost.Pos_y, 0, 0);
-            }
+
+
+
         }
         #region System.ICommand
 
@@ -301,5 +323,196 @@ namespace WPFandCommand
 
         #endregion
     }
+    public class GoTenRightCommand : ICommand
+    {
+        List<GhostInvoker> ghostInvoker;
+        List<Ghost> ghost;
+        List<ICommand> CommandRow;
+
+
+        public GoTenRightCommand(List<GhostInvoker> ghostInvoker, List<Ghost> ghost, List<ICommand> list)
+        {
+            this.ghostInvoker = ghostInvoker;
+            this.ghost = ghost;
+            CommandRow = list;
+
+        }
+
+
+        public void Execute()
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                for (int x = 0; x < ghostInvoker.Count; x++)
+                {
+                    ghostInvoker[x].GoRight();
+
+                }
+
+
+            }
+
+
+        }
+
+
+        public void Unexecute()
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                for (int x = 0; x < ghostInvoker.Count; x++)
+                {
+                    ghostInvoker[x].GoLeft();
+
+                }
+
+
+            }
+
+
+
+        }
+        #region System.ICommand
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            Execute();
+        }
+
+        #endregion
+    }
+    public class GoTenUpCommand : ICommand
+    {
+        List<GhostInvoker> ghostInvoker;
+        List<Ghost> ghost;
+        List<ICommand> CommandRow;
+
+
+        public GoTenUpCommand(List<GhostInvoker> ghostInvoker, List<Ghost> ghost, List<ICommand> list)
+        {
+            this.ghostInvoker = ghostInvoker;
+            this.ghost = ghost;
+            CommandRow = list;
+
+        }
+
+
+        public void Execute()
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                for (int x = 0; x < ghostInvoker.Count; x++)
+                {
+                    ghostInvoker[x].GoUp();
+
+                }
+
+
+            }
+
+
+        }
+
+
+        public void Unexecute()
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                for (int x = 0; x < ghostInvoker.Count; x++)
+                {
+                    ghostInvoker[x].GoDown();
+
+                }
+
+
+            }
+
+        }
+        #region System.ICommand
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            Execute();
+        }
+
+        #endregion
+    }
+    public class GoTenDownCommand : ICommand
+    {
+        List<GhostInvoker> ghostInvoker;
+        List<Ghost> ghost;
+        List<ICommand> CommandRow;
+
+
+        public GoTenDownCommand(List<GhostInvoker> ghostInvoker, List<Ghost> ghost, List<ICommand> list)
+        {
+            this.ghostInvoker = ghostInvoker;
+            this.ghost = ghost;
+            CommandRow = list;
+
+        }
+
+
+        public void Execute()
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                for (int x = 0; x < ghostInvoker.Count; x++)
+                {
+                    ghostInvoker[x].GoDown();
+
+                }
+
+
+            }
+
+        }
+
+
+        public void Unexecute()
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                for (int x = 0; x < ghostInvoker.Count; x++)
+                {
+                    ghostInvoker[x].GoUp();
+
+                }
+
+
+            }
+
+        }
+        #region System.ICommand
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            Execute();
+        }
+
+        #endregion
+    }
+
 
 }

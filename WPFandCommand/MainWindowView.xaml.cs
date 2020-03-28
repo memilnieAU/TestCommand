@@ -28,19 +28,5 @@ namespace WPFandCommand
             DataContext = mainWindowViewModel;
             
         }
-
-        public void button_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine(string.Format("You clicked on the {0}. button.", (sender as Button).Tag));
-            // int nr = (sender as Button).Content
-            String nr = (sender as Button).Content.ToString();
-            Char nr1 = nr[0];
-            int nR = Convert.ToInt32(nr[0].ToString());
-            (sender as Button).Margin = new Thickness(mainWindowViewModel.allGhosts[nR].Pos_x, mainWindowViewModel.allGhosts[nR].Pos_y, 0,0);
-            
-        }
-
-      
-          
     }
 }
